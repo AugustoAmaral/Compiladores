@@ -3,7 +3,7 @@
 #include <string.h>
 #include "structure.cpp"
 #define tam_palavras_reservadas 12
-const char* const palavras_reservadas[] = { "+","-","*","/","<-","loop","end","goto","read","write","begin","int"}; //13 palavras reservadas
+const char* const palavras_reservadas[] = { "+","-","*","/","<-","loop","end","goto","read","write","begin","int" }; //13 palavras reservadas
 
 
 void identificarPalavrasReservadas(char* linha) {
@@ -38,7 +38,7 @@ Linhas* pegarLinhas(char* nome_do_arquivo) {
 		while ((fgets(linha, sizeof(linha), arq)) != NULL){//VAI GUARDAR AS LINHAS DO CODIGO EM UM VETOR DE LINHAS
 			
 			l->info = (char*) malloc (sizeof(linha)); // ALOCA ESPAÇO PARA A INFO DA LINHA
-			l->info = strtok(linha,"\n"); //&l->info = linha; //ARMAZENA A LINHA
+			strcpy(l->info,linha); //&l->info = linha; //ARMAZENA A LINHA
 			l->id = contador; // DEFINE A LINHA DO PROGRAMA
 
 						
