@@ -8,6 +8,7 @@ FUNCOES
 
 END*/
 #include <stdio.h>
+#include <ctype.h>
 
 typedef struct palavras{
 	struct palavras* ant;
@@ -29,4 +30,14 @@ void printarLinha(Linhas* line){ //DEBUG ONLY
 		printf("%s",l->info);
 		l = l->prox;
 	}
+}
+
+int verificarId (char* palavra){ // RETORNA 1 SE TODAS AS LETRAS FOREM MAIUSCULAS E 0 CASO N
+	int i=0;
+	int check;
+	for (i=0;i<strlen(palavra);i++)
+		if (palavra[i] != toupper(palavra[i]))
+			return 0;
+	return 1;
+	
 }

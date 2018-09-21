@@ -9,16 +9,21 @@ const char* const atributo_reservadas[] = {"SUM","0","1","-"};
 
 void identificarPalavrasReservadas(Palavras* linha,int num_lin) {
 	Palavras* p = linha;
+	int token = 0; //Vai servir pra identificar palavras maiusculas
 	while (p->prox != NULL) {
 		for (int i = 0; i<tam_palavras_reservadas; i++) //VERIFICA SE A PALAVRA ATUAL � RESERVADA
 			if (strcmp(p->info, lexemas_reservadas[i]) == 0){
+				token = 1;
 				printf("|Lin: %d  \t|Col: %d  \t|Lex: %s  \t|Tok: %s\t|",num_lin,p->id,lexemas_reservadas[i],tokens_reservadas[i]);
 				if (i>=12)
 				printf("Attr: %s\t|\n",atributo_reservadas[i-12]);
 				else
 				printf("attr: -\t|\n");
 			}
+		if ((verificarId(p->info) == 1) and (token == 0))
+			printf("|Lin: %d  \t|Col: %d  \t|Lex: %s  \t|Tok: ID \t|Attr: sei la\t|\n",num_lin,p->id,p->info);
 		p = p->prox;
+		token = 0;
 	}
 
 }

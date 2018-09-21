@@ -11,6 +11,11 @@ int main() {
 		identificarPalavrasReservadas(l->info,l->id);
 		l = l->prox;
 	}
+	/*char testa[] = {"PALAVRATESTE"};
+	char tests[] = {"palavrateste"};
+	char testd[] = {"PaLaVrAtEsTe"};
+	printf("1:%d | 0:%d | 0:%d",verificarId(testa),verificarId(tests),verificarId(testd));*/
+	
 		
 	return 0;
 }
