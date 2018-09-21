@@ -7,8 +7,8 @@ int main() {
 	//scanf("%s",arq_nome);
 	char arq_nome[] = "teste.txt";
 	Linhas* l = pegarLinhas(arq_nome);
-	while (l != NULL){
-		identificarPalavrasReservadas(l->info);
+	while (l->prox != NULL){
+		identificarPalavrasReservadas(l->info,l->id);
 		l = l->prox;
 	}
 		
