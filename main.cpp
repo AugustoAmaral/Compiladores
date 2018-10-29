@@ -1,4 +1,5 @@
 #include "funcarquivos.cpp"
+#include <windows.h>
 //#include "structure.cpp"
 
 int main() {
@@ -9,13 +10,14 @@ int main() {
 	Linhas* l = pegarLinhas(arq_nome);
 	while (l->prox != NULL){
 		identificarPalavrasReservadas(l->info,l->id);
+		printarLinha(l->info);
 		l = l->prox;
 	}
 	/*char testa[] = {"PALAVRATESTE"};
 	char tests[] = {"palavrateste"};
 	char testd[] = {"PaLaVrAtEsTe"};
 	printf("1:%d | 0:%d | 0:%d",verificarId(testa),verificarId(tests),verificarId(testd));*/
-	
+	system("PAUSE");
 		
 	return 0;
 }

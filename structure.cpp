@@ -1,17 +1,17 @@
-/*ESTRUTURA
-
-BEGIN
-
-DECLARACAO DE VARIAVEIS
-
-FUNCOES
-
-END*/
 #include <stdio.h>
 #include <ctype.h>
+#define tam_palavras_reservadas 16
+const char* const lexemas_reservadas[] = {"program","integer","real","begin","end","goto","loop","read","write","var","<-",";","+","0","1",":","NULL"}; //16 palavras reservadas
+const char* const tokens_reservadas[] = {"start","type","type","delimiter","delimiter","goto","loop","read","write","var","attr","point","operator","zero","one","point","NULL"};
+const char* const atributo_reservadas[] = {"SUM","0","1","-","NULL"};
+
+
 
 typedef struct palavras{
 	struct palavras* ant;
+	int tok;
+	int line;
+	int attr;
 	int id;
 	char* info;
 	struct palavras* prox;
@@ -24,11 +24,11 @@ typedef struct linhas{
 	struct linhas* prox;
 } Linhas;
 
-void printarLinha(Linhas* line){ //DEBUG ONLY
-	Linhas* l = line;
-	while (l != NULL){
-		printf("%s",l->info);
-		l = l->prox;
+void printarLinha(Palavras* linha){ //DEBUG ONLY
+	Palavras* p = linha;
+	while (p->prox != NULL){
+		printf("|Lin: %d  \t|Col: %d  \t|Lex: %s  \t|Tok: %s\t|Attr: %s\t|\n",p->line,p->id,lexemas_reservadas[p->tok],tokens_reservadas[p->tok],atributo_reservadas[p->attr]);
+		p = p->prox;
 	}
 }
 

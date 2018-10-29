@@ -2,30 +2,31 @@
 #include <stdlib.h>
 #include <string.h>
 #include "structure.cpp"
-#define tam_palavras_reservadas 16
-const char* const lexemas_reservadas[] = {"program","integer","real","begin","end","goto","loop","read","write","var","<-",";","+","0","1",":"}; //16 palavras reservadas
-const char* const tokens_reservadas[] = {"start","type","type","delimiter","delimiter","goto","loop","read","write","var","attr","point","operator","zero","one","point"};
-const char* const atributo_reservadas[] = {"SUM","0","1","-"};
+
 
 void identificarPalavrasReservadas(Palavras* linha,int num_lin) {
 	Palavras* p = linha;
-	int token = 0; //Vai servir pra identificar palavras maiusculas
+	int is_token = 0; //Vai servir pra identificar palavras maiusculas
+	int i = 0; //CONTADOR
 	while (p->prox != NULL) {
-		for (int i = 0; i<tam_palavras_reservadas; i++) //VERIFICA SE A PALAVRA ATUAL ï¿½ RESERVADA
+		for (i = 0; i<(tam_palavras_reservadas-1); i++) //VERIFICA SE A PALAVRA ATUAL ï¿½ RESERVADA
 			if (strcmp(p->info, lexemas_reservadas[i]) == 0){
-				token = 1;
-				printf("|Lin: %d  \t|Col: %d  \t|Lex: %s  \t|Tok: %s\t|",num_lin,p->id,lexemas_reservadas[i],tokens_reservadas[i]);
-				if (i>=12)
-				printf("Attr: %s\t|\n",atributo_reservadas[i-12]);
+				is_token = 1;
+				p->tok = i;
+				if (i>=12) // ADICIONA O ATRIBUTO, CASO POSSA TER, IMPORTANTE LEMBRAR QUE O ATRIBUTO SÓ ESTÁ SENDO FEITO DESSA FORMA PORQUE ELE ESTÁ ORGANIZADO DESSE JEITO
+					p->attr = i-12;
 				else
-				printf("attr: -\t|\n");
+					p->attr = 4;
 			}
-		if ((verificarId(p->info) == 1) and (token == 0))
-			printf("|Lin: %d  \t|Col: %d  \t|Lex: %s  \t|Tok: ID \t|Attr: sei la\t|\n",num_lin,p->id,p->info);
+		if ((verificarId(p->info) == 1) and (is_token == 0)){
+			p->tok = 16;
+			p->attr = 4;
+		}
+		p->line = num_lin;
 		p = p->prox;
-		token = 0;
+		is_token = 0;
 	}
-
+	//printarLinha(linha);
 }
 
 Palavras* pegarPalavras(char* linha){
@@ -77,7 +78,7 @@ Linhas* pegarLinhas(char* nome_do_arquivo) {
 		while ((fgets(linha, sizeof(linha), arq)) != NULL){//VAI GUARDAR AS LINHAS DO CODIGO EM UM VETOR DE LINHAS
 			
 			//printf("\n %s \n",linha);
-			l->info = pegarPalavras(linha);
+			l->info = pegarPalavras(linha); //PEGA A LINHA E TRANSFORMA EM UMA ESTRUTURA DE PALAVRAS
 			//printf("\n %s \n",linha);
 			l->id = contador; // DEFINE A LINHA DO PROGRAMA
 						
@@ -93,8 +94,4 @@ Linhas* pegarLinhas(char* nome_do_arquivo) {
 	fclose(arq);
 	
 	return linha_retornada;
-}
-
-void reescreverLinha(char* linha) {
-
 }
