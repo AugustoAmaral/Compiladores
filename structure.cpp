@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #define tam_palavras_reservadas 16
-const char* const lexemas_reservadas[] = {"program","integer","real","begin","end","goto","loop","read","write","var","<-",";","+","0","1",":","NULL"}; //16 palavras reservadas
-const char* const tokens_reservadas[] = {"start","type","type","delimiter","delimiter","goto","loop","read","write","var","attr","point","operator","zero","one","point","NULL"};
-const char* const atributo_reservadas[] = {"SUM","0","1","-","NULL"};
+const char* const lexemas_reservadas[] = {"program","integer","real","begin","end","goto","loop","read","write","var","<-",";","+","0","1",":","name"}; //16 palavras reservadas
+const char* const tokens_reservadas[] = {"start","type","type","delimiter","delimiter","goto","loop","read","write","var","attr","point","operator","zero","one","point","name"};
+const char* const atributo_reservadas[] = {"SUM","0","1","-","name"};
 
 
 

@@ -7,7 +7,7 @@
 	-- NOME DE VARIAVEL : TIPO ; o END do VAR é o BEGIN
 -/-BEGIN
 	-- BLOCOS DE COMANDO
--- COMANDOS
+-- /*COMANDOS
 	-- NOME <- 0 ;
 	-- NOME <- NOME + 1 ;
 	-- NOME <- NOME ;
@@ -15,7 +15,7 @@
 	-- LOOP -/- BLOCO DE COMANDOS -/- END ;
 	-- READ ( NOME ) ;
 	-- WRITE ( NOME ) ;
-*/
+*/ 
 
 #include "funcarquivos.cpp"
 
@@ -39,8 +39,7 @@ enum token
 	ZERO,
 	ONE,
 	COLON,
-	NUL,
-	VARIAVEL
+	NAME
 };
 
 token conversor(char* info)
@@ -60,84 +59,385 @@ token conversor(char* info)
 	else if (info == "0") return ZERO;
 	else if (info == "1") return ONE;
 	else if (info == ":") return COLON;
-	else if (info == "NULL") return NUL;
+	else if (info == "name") return NAME;
 }
 
-void verificadorSintatico(Linhas* L, int numlin, Sintatico* sin)
+void Sin1(Linhas* L, int numlin, Sintatico* sin)
 {
-	token toke = conversor(token->info);
+	token toke = conversor(L->info->info);
 	token ttoke;
-
+	token ttokke;
 	switch (toke)
 	{
-		case PROGRAM:
-			
-			sin->lex = lexemas_reservadas[token->tok];
-			sin->val = tokens_reservadas[token->tok];
-			ttoke = conversor(token->prox->info);
-			if (ttoke == 16)
-			{
-				sin->nome = token->prox->info;
-				if (/*checar ponto e virgula*/)
-				{
+	case PROGRAM:
 
+		sin->lex = lexemas_reservadas[L->info->tok];
+		sin->val = tokens_reservadas[L->info->tok];
+		ttoke = conversor(L->info->prox);
+		
+		switch (ttoke)
+		{
+		case NAME:
+			sin->nome = L->info->prox->info;
+			ttokke = conversor(L->info->prox->prox);
+			switch (ttokke)
+			{
+			
+			case SEMICOLON:
+				if (L->prox != NULL)
+				{
+					L = L->prox;
+					//toke = conversor(L->info->info);
 				}
 				else
 				{
-					prinf("Error, ';' esperado depois de Nome",);
+					prinf("END esperado");
+					system("PAUSE");
+					exit(0);
 				}
+				break;
+			
+			default:
+				prinf("Error, ';' esperado depois de NAME");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
+			break;
+
+		default:
+			prinf("Error, esperado NAME depois de PROGRAM");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
+		break;
+	
+	default:
+		prinf("PROGRAM não encontrado");
+		system("PAUSE");
+		exit(0);
+		break;
+	}
+	toke = conversor(L->info->info);
+	switch (toke)
+	{
+	case BEGIN:
+		if (L->prox != NULL)
+		{
+			L = L->prox;
+			//toke = conversor(L->info->info);
+			begins++;
+			Sin3(L, numlin, sin);
+		}
+		else
+		{
+			prinf("END esperado");
+			system("PAUSE");
+			exit(0);
+		}
+		
+		break;
+	case VAR:
+		if (L->prox != NULL)
+		{
+			L = L->prox;
+			//toke = conversor(L->info->info);
+			Sin2(L, numlin, sin);
+		}
+		else
+		{
+			prinf("END esperado");
+			system("PAUSE");
+			exit(0);
+		}
+		
+		break;
+	default:
+		prinf("Begin\Var não encontrado");
+		system("PAUSE");
+		exit(0);
+		break;
+	}
+}
+
+void Sin3(Linhas* L, int numlin, Sintatico* sin)
+{
+	token toke = conversor(L->info->info);
+	token ttoke;
+	token ttokke;
+	token ttoken;
+
+	switch (toke)
+	{
+		//begin acho que ta errado//
+	case BEGIN:
+		begins++;
+		if (L->prox != NULL)
+		{
+			L = L->prox;
+			toke = conversor(L->info->info);
+		}
+		else
+		{
+			prinf("END esperado");
+				system("PAUSE");
+				exit(0);
+		}
+		break;
+	case END:
+		begins--;
+		if (L->prox != NULL)
+		{
+			L = L->prox;
+			toke = conversor(L->info->info);
+		}
+		else
+		{
+			if (begins>0)
+			{
+				prinf("END(s) esperado(s)");
+				system("PAUSE");
+				exit(0);
 			}
 			else
 			{
-				prinf("Error, esperado nome depois de program foi encontrado %d", tokke);
+				prinf("Programa compilado com sucesso");
+				system("PAUSE");
+				exit(0);
 			}
-			//verificadorSintatico(token->prox, numlin, sin);
-			//add tabela sintatico
-			break;
-		case INTEGER:
-			break;
-		case REAL:
-			break;
-		case BEGIN:
-			begins++;
-			break;
-		case END:
-			begins--;
-			break;
-		case GO_TO:
-			break;
-		case LOOP:
-			break;
-		case READ:
-			break;
-		case WRITE:
-			break;
-		case VAR:
-			break;
-		case ARROW:
-			break;
-		case SEMICOLON:
-			break;
-		case PLUS:
-			break;
-		case ZERO:
-			break;
-		case ONE:
-			break;
-		case COLON:
-			break;
-		case NUL:
-			break;
-
+		}
+		break;
+	case GO_TO:
+		ttoke = conversor(L->info->info);
+		switch (ttoke)
+		{
+		case NAME:
+			L->info = L->info->prox;
+			ttokke = conversor(L->info->info);
+			switch (ttokke)
+			{
+			case SEMICOLON:
+				if (L->prox != NULL)
+				{
+					L = L->prox;
+					toke = conversor(L->info->info);
+				}
+				else
+				{
+					prinf("END esperado");
+					system("PAUSE");
+					exit(0);
+				}
+				break;
+			default:
+				prinf("';' esperado depois de NAME");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
 			break;
 		default:
-			printf("Error");
+			prinf("NAME esperado depois de GO_TO");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
+		break;
+	case LOOP:
+		//aqui é a merda//
+		begins++;
+		if (L->prox != NULL)
+		{
+			L = L->prox;
+			toke = conversor(L->info->info);
+		}
+		else
+		{
+			prinf("END esperado");
+			system("PAUSE");
+			exit(0);
+		}
+		break;
+	case READ:
+		ttoke = conversor(L->info->info);
+		switch (ttoke)
+		{
+		case NAME:
+			L->info = L->info->prox;
+			ttokke = conversor(L->info->info);
+			switch (ttokke)
+			{
+			case SEMICOLON:
+				if (L->prox != NULL)
+				{
+					L = L->prox;
+					toke = conversor(L->info->info);
+				}
+				else
+				{
+					prinf("END esperado");
+					system("PAUSE");
+					exit(0);
+				}
+				break;
+			default:
+				prinf("';' esperado depois de Name");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
+			break;
+		default:
+			prinf("NAME esperado depois de READ");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
+		break;
+	case WRITE:
+		ttoke = conversor(L->info->info);
+		switch (ttoke)
+		{
+		case NAME:
+			L->info = L->info->prox;
+			ttokke = conversor(L->info->info);
+			switch (ttokke)
+			{
+			case SEMICOLON:
+				L = L->prox;
+				toke = conversor(L->info->info);
+				break;
+			default:
+				prinf("';' esperado depois de NAME");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
+			break;
+		default:
+			prinf("NAME esperado depois de WRITE");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
+		break;
+	case NAME:
+		break;
+	default:
+		prinf("Fora da Regra sintática");
+		system("PAUSE");
+		exit(0);
+		break;
 	}
-
+	/*COMANDOS
+	-- NOME <- 0 ;
+	-- NOME <- NOME + 1 ;
+	-- NOME <- NOME ;
+	-- GOTO NOME ;
+	-- LOOP -/- BLOCO DE COMANDOS -/- END ;
+	-- READ ( NOME ) ;
+	-- WRITE ( NOME ) ;
+	*/
 }
 
-
-
+void Sin2(Linhas* L, int numlin, Sintatico* sin)
+{
+	token toke = conversor(L->info->info);
+	token ttoke;
+	token ttokke;
+	token ttoken;
+	switch (toke)
+	{
+	case BEGIN:
+		begins++;
+		Sin3(L, numlin, sin);
+		break;
+	case NAME:
+		sin->nome = L->info->info;
+		ttoke = conversor(L->info->prox->info);
+		switch (ttoke)
+		{
+		case COLON:
+			L->info = L->info->prox;
+			ttokke = conversor(L->info->prox->info);
+			switch (ttokke)
+			{
+			case INTEGER:
+				sin->lex = lexemas_reservadas[L->info->tok];
+				sin->val = tokens_reservadas[L->info->tok];
+				L->info = L->info->prox;
+				ttoken = conversor(L->info->prox->info);
+				switch (ttoken)
+				{
+				case SEMICOLON:
+					if (L->prox != NULL)
+					{
+						L = L->prox;
+						toke = conversor(L->info->info);
+					}
+					else
+					{
+						prinf("END esperado");
+						system("PAUSE");
+						exit(0);
+					}
+					break;
+				default:
+					prinf("Error, ';' esperado depois do TIPO", );
+					system("PAUSE");
+					exit(0);
+					break;
+				}
+				break;
+			case REAL:
+				sin->lex = lexemas_reservadas[L->info->tok];
+				sin->val = tokens_reservadas[L->info->tok];
+				L->info = L->info->prox;
+				ttoken = conversor(L->info->prox->info);
+				switch (ttoken)
+				{
+				case SEMICOLON:
+					if (L->prox != NULL)
+					{
+						L = L->prox;
+						toke = conversor(L->info->info);
+					}
+					else
+					{
+						prinf("END esperado");
+						system("PAUSE");
+						exit(0);
+					}
+					break;
+				default:
+					prinf("Error, ';' esperado depois do TIPO", );
+					system("PAUSE");
+					exit(0);
+					break;
+				}
+				break;
+			default:
+				prinf("TIPO esperado depois de ':'");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
+			break;
+		default:
+			prinf("Error, ':' esperado depois de NAME");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
+		break;
+	default:
+		prinf("Begin\Name não encontrado");
+		system("PAUSE");
+		exit(0);
+		break;
+	}
+}
 
 /*
 enum class Type: int
