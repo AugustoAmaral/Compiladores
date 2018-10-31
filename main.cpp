@@ -13,6 +13,7 @@ int main() {
 		printarLinha(l->info);
 		l = l->prox;
 	}
+	//sintatico
 	/*char testa[] = {"PALAVRATESTE"};
 	char tests[] = {"palavrateste"};
 	char testd[] = {"PaLaVrAtEsTe"};

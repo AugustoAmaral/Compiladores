@@ -4,7 +4,7 @@
 -- VAR | BEGIN
 -/- VAR
 	-- BLOCO DE VARIAVEIS
-	-- NOME DE VARIAVEL : TIPO ;
+	-- NOME DE VARIAVEL : TIPO ; o END do VAR é o BEGIN
 -/-BEGIN
 	-- BLOCOS DE COMANDO
 -- COMANDOS
@@ -18,6 +18,8 @@
 */
 
 #include "funcarquivos.cpp"
+
+int begins = 0;
 
 enum token
 {
@@ -61,7 +63,7 @@ token conversor(char* info)
 	else if (info == "NULL") return NUL;
 }
 
-void verificadorSintatico(Palavras* token, int numlin, Sintatico* sin)
+void verificadorSintatico(Linhas* L, int numlin, Sintatico* sin)
 {
 	token toke = conversor(token->info);
 	token ttoke;
@@ -73,9 +75,21 @@ void verificadorSintatico(Palavras* token, int numlin, Sintatico* sin)
 			sin->lex = lexemas_reservadas[token->tok];
 			sin->val = tokens_reservadas[token->tok];
 			ttoke = conversor(token->prox->info);
-			if (ttoke == 17)
+			if (ttoke == 16)
 			{
 				sin->nome = token->prox->info;
+				if (/*checar ponto e virgula*/)
+				{
+
+				}
+				else
+				{
+					prinf("Error, ';' esperado depois de Nome",);
+				}
+			}
+			else
+			{
+				prinf("Error, esperado nome depois de program foi encontrado %d", tokke);
 			}
 			//verificadorSintatico(token->prox, numlin, sin);
 			//add tabela sintatico
@@ -85,8 +99,10 @@ void verificadorSintatico(Palavras* token, int numlin, Sintatico* sin)
 		case REAL:
 			break;
 		case BEGIN:
+			begins++;
 			break;
 		case END:
+			begins--;
 			break;
 		case GO_TO:
 			break;
@@ -112,8 +128,6 @@ void verificadorSintatico(Palavras* token, int numlin, Sintatico* sin)
 			break;
 		case NUL:
 			break;
-		case VARIAVEL:
-			sin->nome
 
 			break;
 		default:
