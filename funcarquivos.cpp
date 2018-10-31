@@ -6,6 +6,7 @@
 
 void identificarPalavrasReservadas(Palavras* linha,int num_lin) {
 	Palavras* p = linha;
+	Sintatico* sin; // ou é []?
 	int is_token = 0; //Vai servir pra identificar palavras maiusculas
 	int i = 0; //CONTADOR
 	while (p->prox != NULL) {
@@ -13,6 +14,10 @@ void identificarPalavrasReservadas(Palavras* linha,int num_lin) {
 			if (strcmp(p->info, lexemas_reservadas[i]) == 0){
 				is_token = 1;
 				p->tok = i;
+				//sintático
+				/*
+				verificadorSintatico(p->info, num_lin, sin);
+				*/
 				if (i>=12) // ADICIONA O ATRIBUTO, CASO POSSA TER, IMPORTANTE LEMBRAR QUE O ATRIBUTO SÓ ESTÁ SENDO FEITO DESSA FORMA PORQUE ELE ESTÁ ORGANIZADO DESSE JEITO
 					p->attr = i-12;
 				else

@@ -17,6 +17,12 @@ typedef struct palavras{
 	struct palavras* prox;
 } Palavras;
 
+typedef struct sintatico {
+	char* nome;
+	char* lex;
+	char* val;
+} Sintatico;
+
 typedef struct linhas{
 	struct linhas* ant;
 	int id;
