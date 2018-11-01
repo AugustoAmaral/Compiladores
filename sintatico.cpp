@@ -64,23 +64,23 @@ token conversor(char* info)
 
 void Sin1(Linhas* L, int numlin, Sintatico* sin)
 {
-	token toke = conversor(L->info->info);
-	token ttoke;
-	token ttokke;
-	switch (toke)
+	token token1 = conversor(L->info->info);
+	token token2;
+	token token3;
+	switch (token1)
 	{
 	case PROGRAM:
 
 		sin->lex = lexemas_reservadas[L->info->tok];
 		sin->val = tokens_reservadas[L->info->tok];
-		ttoke = conversor(L->info->prox);
+		token2 = conversor(L->info->prox);
 		
-		switch (ttoke)
+		switch (token2)
 		{
 		case NAME:
 			sin->nome = L->info->prox->info;
-			ttokke = conversor(L->info->prox->prox);
-			switch (ttokke)
+			token3 = conversor(L->info->prox->prox);
+			switch (token3)
 			{
 			
 			case SEMICOLON:
@@ -119,8 +119,8 @@ void Sin1(Linhas* L, int numlin, Sintatico* sin)
 		exit(0);
 		break;
 	}
-	toke = conversor(L->info->info);
-	switch (toke)
+	token1 = conversor(L->info->info);
+	switch (token1)
 	{
 	case BEGIN:
 		if (L->prox != NULL)
@@ -163,12 +163,10 @@ void Sin1(Linhas* L, int numlin, Sintatico* sin)
 
 void Sin3(Linhas* L, int numlin, Sintatico* sin)
 {
-	token toke = conversor(L->info->info);
-	token ttoke;
-	token ttokke;
-	token ttoken;
+	token token1 = conversor(L->info->info);
+	token token2, token3, token4, token5, token6;
 
-	switch (toke)
+	switch (token1)
 	{
 		//begin acho que ta errado//
 	case BEGIN:
@@ -176,7 +174,7 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		if (L->prox != NULL)
 		{
 			L = L->prox;
-			toke = conversor(L->info->info);
+			token1 = conversor(L->info->info);
 		}
 		else
 		{
@@ -190,7 +188,7 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		if (L->prox != NULL)
 		{
 			L = L->prox;
-			toke = conversor(L->info->info);
+			token1 = conversor(L->info->info);
 		}
 		else
 		{
@@ -209,19 +207,20 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		}
 		break;
 	case GO_TO:
-		ttoke = conversor(L->info->info);
-		switch (ttoke)
+		L->info = L->info->prox;
+		token2 = conversor(L->info->info);
+		switch (token2)
 		{
 		case NAME:
 			L->info = L->info->prox;
-			ttokke = conversor(L->info->info);
-			switch (ttokke)
+			token3 = conversor(L->info->info);
+			switch (token3)
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
 				{
 					L = L->prox;
-					toke = conversor(L->info->info);
+					token1 = conversor(L->info->info);
 				}
 				else
 				{
@@ -245,12 +244,47 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		}
 		break;
 	case LOOP:
+		L->info = L->info->prox;
+		token2 = conversor(L->info->info);
+		switch (token2)
+		{
+		case NAME:
+			L->info = L->info->prox;
+			token3 = conversor(L->info->info);
+			switch (token3)
+			{
+			case SEMICOLON:
+				if (L->prox != NULL)
+				{
+					L = L->prox;
+					token1 = conversor(L->info->info);
+				}
+				else
+				{
+					prinf("END esperado");
+					system("PAUSE");
+					exit(0);
+				}
+				break;
+			default:
+				prinf("';' esperado depois de NAME");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
+			break;
+		default:
+			prinf("Esperado NAME depois de LOOP");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
 		//aqui é a merda//
 		begins++;
 		if (L->prox != NULL)
 		{
 			L = L->prox;
-			toke = conversor(L->info->info);
+			token1 = conversor(L->info->info);
 		}
 		else
 		{
@@ -260,19 +294,20 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		}
 		break;
 	case READ:
-		ttoke = conversor(L->info->info);
-		switch (ttoke)
+		L->info = L->info->prox;
+		token2 = conversor(L->info->info);
+		switch (token2)
 		{
 		case NAME:
 			L->info = L->info->prox;
-			ttokke = conversor(L->info->info);
-			switch (ttokke)
+			token3 = conversor(L->info->info);
+			switch (token3)
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
 				{
 					L = L->prox;
-					toke = conversor(L->info->info);
+					token1 = conversor(L->info->info);
 				}
 				else
 				{
@@ -296,17 +331,27 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		}
 		break;
 	case WRITE:
-		ttoke = conversor(L->info->info);
-		switch (ttoke)
+		L->info = L->info->prox;
+		token2 = conversor(L->info->info);
+		switch (token2)
 		{
 		case NAME:
 			L->info = L->info->prox;
-			ttokke = conversor(L->info->info);
-			switch (ttokke)
+			token3 = conversor(L->info->info);
+			switch (token3)
 			{
 			case SEMICOLON:
-				L = L->prox;
-				toke = conversor(L->info->info);
+				if (L->prox != NULL)
+				{
+					L = L->prox;
+					token1 = conversor(L->info->info);
+				}
+				else
+				{
+					prinf("END esperado");
+					system("PAUSE");
+					exit(0);
+				}
 				break;
 			default:
 				prinf("';' esperado depois de NAME");
@@ -323,6 +368,116 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 		}
 		break;
 	case NAME:
+		L->info = L->info->prox;
+		token2 = conversor(L->info->info);
+		switch (token2)
+		{
+		case ARROW:
+			L->info = L->info->prox;
+			token3 = conversor(L->info->info);
+			switch (token3)
+			{
+			case ZERO:
+				L->info = L->info->prox;
+				token4 = conversor(L->info->info);
+				switch (token4)
+				{
+				case SEMICOLON:
+					if (L->prox != NULL)
+					{
+						L = L->prox;
+						token1 = conversor(L->info->info);
+					}
+					else
+					{
+						prinf("END esperado");
+						system("PAUSE");
+						exit(0);
+					}
+					break;
+				default:
+					prinf("Esperado ';' depois de '0'");
+					system("PAUSE");
+					exit(0);
+					break;
+				}
+				break;
+			case NAME:
+				L->info = L->info->prox;
+				token4 = conversor(L->info->info);
+				switch (token4)
+				{
+				case SEMICOLON:
+					if (L->prox != NULL)
+					{
+						L = L->prox;
+						token1 = conversor(L->info->info);
+					}
+					else
+					{
+						prinf("END esperado");
+						system("PAUSE");
+						exit(0);
+					}
+					break;
+				case PLUS:
+					L->info = L->info->prox;
+					token5 = conversor(L->info->info);
+					switch (token5)
+					{
+					case ONE:
+						L->info = L->info->prox;
+						token6 = conversor(L->info->info);
+						switch (token6)
+						{
+						case SEMICOLON:
+							if (L->prox != NULL)
+							{
+								L = L->prox;
+								token1 = conversor(L->info->info);
+							}
+							else
+							{
+								prinf("END esperado");
+								system("PAUSE");
+								exit(0);
+							}
+							break;
+						default:
+							prinf("Esperado ';' depois de '1'");
+							system("PAUSE");
+							exit(0);
+							break;
+						}
+						break;
+					default:
+						prinf("Esperado '1' depois de '+'");
+						system("PAUSE");
+						exit(0);
+						break;
+					}
+
+					break;
+				default:
+					prinf("Esperado ';' depois de '0'");
+					system("PAUSE");
+					exit(0);
+					break;
+				}
+				break;
+			default:
+				prinf("Esperado '0' ou NAME");
+				system("PAUSE");
+				exit(0);
+				break;
+			}
+			break;
+		default:
+			prinf("Esperado Atribuidor '<-'");
+			system("PAUSE");
+			exit(0);
+			break;
+		}
 		break;
 	default:
 		prinf("Fora da Regra sintática");
@@ -343,11 +498,11 @@ void Sin3(Linhas* L, int numlin, Sintatico* sin)
 
 void Sin2(Linhas* L, int numlin, Sintatico* sin)
 {
-	token toke = conversor(L->info->info);
-	token ttoke;
-	token ttokke;
-	token ttoken;
-	switch (toke)
+	token token1 = conversor(L->info->info);
+	token token2;
+	token token3;
+	token token4;
+	switch (token1)
 	{
 	case BEGIN:
 		begins++;
@@ -355,26 +510,27 @@ void Sin2(Linhas* L, int numlin, Sintatico* sin)
 		break;
 	case NAME:
 		sin->nome = L->info->info;
-		ttoke = conversor(L->info->prox->info);
-		switch (ttoke)
+		L->info = L->info->prox;
+		token2 = conversor(L->info->info);
+		switch (token2)
 		{
 		case COLON:
 			L->info = L->info->prox;
-			ttokke = conversor(L->info->prox->info);
-			switch (ttokke)
+			token3 = conversor(L->info->info);
+			switch (token3)
 			{
 			case INTEGER:
 				sin->lex = lexemas_reservadas[L->info->tok];
 				sin->val = tokens_reservadas[L->info->tok];
 				L->info = L->info->prox;
-				ttoken = conversor(L->info->prox->info);
-				switch (ttoken)
+				token4 = conversor(L->info->info);
+				switch (token4)
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
 					{
 						L = L->prox;
-						toke = conversor(L->info->info);
+						token1 = conversor(L->info->info);
 					}
 					else
 					{
@@ -394,14 +550,14 @@ void Sin2(Linhas* L, int numlin, Sintatico* sin)
 				sin->lex = lexemas_reservadas[L->info->tok];
 				sin->val = tokens_reservadas[L->info->tok];
 				L->info = L->info->prox;
-				ttoken = conversor(L->info->prox->info);
-				switch (ttoken)
+				token4 = conversor(L->info->info);
+				switch (token4)
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
 					{
 						L = L->prox;
-						toke = conversor(L->info->info);
+						token1 = conversor(L->info->info);
 					}
 					else
 					{
@@ -438,10 +594,3 @@ void Sin2(Linhas* L, int numlin, Sintatico* sin)
 		break;
 	}
 }
-
-/*
-enum class Type: int
-{
-	{"program", "integer", "real", "begin", "end", "goto", "loop", "read", "write", "var", "<-", ";", "+", "0", "1", ":", "NULL"}
-};
-*/
