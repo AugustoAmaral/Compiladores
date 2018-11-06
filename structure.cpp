@@ -5,6 +5,101 @@ const char* const lexemas_reservadas[] = {"program","integer","real","begin","en
 const char* const tokens_reservadas[] = {"start","type","type","delimiter","delimiter","goto","loop","read","write","var","attr","point","operator","zero","one","point","name"};
 const char* const atributo_reservadas[] = {"SUM","0","1","-","name"};
 
+enum token
+{
+	PROGRAM,
+	INTEGER,
+	REAL,
+	BEGIN,
+	END,
+	GO_TO,
+	LOOP,
+	READ,
+	WRITE,
+	VAR,
+	ARROW,
+	SEMICOLON,
+	PLUS,
+	ZERO,
+	ONE,
+	COLON,
+	NAME
+};
+
+token conversor(int num)
+{
+	num++;
+	switch (num)
+	{
+		case 1:
+    	return PROGRAM;
+    	break;
+    	
+		case 2:
+    	return INTEGER;
+    	break;
+    	
+		case 3:
+    	return REAL;
+    	break;
+    	
+		case 4:
+    	return BEGIN;
+    	break;
+    	
+		case 5:
+    	return END;
+    	break;
+    	
+		case 6:
+    	return GO_TO;
+    	break;
+    	
+		case 7:
+    	return LOOP;
+    	break;
+    	
+		case 8:
+    	return READ;
+    	break;
+    
+    	case 9:
+    	return WRITE;
+    	break;
+    	
+		case 10:
+    	return VAR;
+    	break;
+    	
+		case 11:
+    	return ARROW;
+    	break;
+    	
+		case 12:
+    	return SEMICOLON;
+    	break;
+    	
+		case 13:
+    	return PLUS;
+    	break;
+    	
+		case 14:
+    	return ZERO;
+    	break;
+    	
+		case 15:
+    	return ONE;
+    	break;
+    	
+		case 16:
+    	return COLON;
+    	break;
+    	
+		case 17:
+    	return NAME;
+    	break;
+	}	
+}
 
 
 typedef struct palavras{
@@ -17,12 +112,13 @@ typedef struct palavras{
 	struct palavras* prox;
 } Palavras;
 
+/*
 typedef struct sintatico {
 	char* nome;
 	char* lex;
 	char* val;
 } Sintatico;
-
+*/
 typedef struct linhas{
 	struct linhas* ant;
 	int id;
@@ -47,3 +143,25 @@ int verificarId (char* palavra){ // RETORNA 1 SE TODAS AS LETRAS FOREM MAIUSCULA
 	return 1;
 	
 }
+
+Linhas go_to_l (Linhas* L, int num_lin){ //Vai pra linha num_lin
+	if (L == NULL)
+		printf("Linha inalcancavel");
+	else if (L->id < num_lin)
+		go_to_l(L->prox);
+	else if (L->id > num_lin)
+		go_to_l(L->ant);
+	else if (L->id == num_lin)
+		return (L);
+}
+
+//Palavras prox_palavra
+
+
+
+
+
+
+
+
+
