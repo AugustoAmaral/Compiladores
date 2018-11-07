@@ -1,4 +1,4 @@
-#include "funcarquivos.cpp"
+#include "sintatico.cpp"
 #include <windows.h>
 //#include "structure.cpp"
 
@@ -8,11 +8,15 @@ int main() {
 	//scanf("%s",arq_nome);
 	char arq_nome[] = "teste.txt";
 	Linhas* l = pegarLinhas(arq_nome);
+	Linhas* line = l;
 	while (l->prox != NULL){
 		identificarPalavrasReservadas(l->info,l->id);
-		printarLinha(l->info);
+		//printarLinha(l->info);
 		l = l->prox;
 	}
+	l = line;
+	//printf("TOKEN %s",conversor(2));
+	Sin1(l);
 	//sintatico
 	/*char testa[] = {"PALAVRATESTE"};
 	char tests[] = {"palavrateste"};

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
-#define tam_palavras_reservadas 16
+#include <stdlib.h>
+#include <string.h>
+#define tam_palavras_reservadas 17
 const char* const lexemas_reservadas[] = {"program","integer","real","begin","end","goto","loop","read","write","var","<-",";","+","0","1",":","name"}; //16 palavras reservadas
 const char* const tokens_reservadas[] = {"start","type","type","delimiter","delimiter","goto","loop","read","write","var","attr","point","operator","zero","one","point","name"};
 const char* const atributo_reservadas[] = {"SUM","0","1","-","name"};
@@ -28,74 +30,73 @@ enum token
 
 token conversor(int num)
 {
-	num++;
 	switch (num)
 	{
-		case 1:
+		case 0:
     	return PROGRAM;
     	break;
     	
-		case 2:
+		case 1:
     	return INTEGER;
     	break;
     	
-		case 3:
+		case 2:
     	return REAL;
     	break;
     	
-		case 4:
+		case 3:
     	return BEGIN;
     	break;
     	
-		case 5:
+		case 4:
     	return END;
     	break;
     	
-		case 6:
+		case 5:
     	return GO_TO;
     	break;
     	
-		case 7:
+		case 6:
     	return LOOP;
     	break;
     	
-		case 8:
+		case 7:
     	return READ;
     	break;
     
-    	case 9:
+    	case 8:
     	return WRITE;
     	break;
     	
-		case 10:
+		case 9:
     	return VAR;
     	break;
     	
-		case 11:
+		case 10:
     	return ARROW;
     	break;
     	
-		case 12:
+		case 11:
     	return SEMICOLON;
     	break;
     	
-		case 13:
+		case 12:
     	return PLUS;
     	break;
     	
-		case 14:
+		case 13:
     	return ZERO;
     	break;
     	
-		case 15:
+		case 14:
     	return ONE;
     	break;
     	
-		case 16:
+		case 15:
     	return COLON;
     	break;
     	
-		case 17:
+		case 16:
     	return NAME;
     	break;
 	}	
@@ -144,18 +145,29 @@ int verificarId (char* palavra){ // RETORNA 1 SE TODAS AS LETRAS FOREM MAIUSCULA
 	
 }
 
-Linhas go_to_l (Linhas* L, int num_lin){ //Vai pra linha num_lin
+Linhas* go_to_l (Linhas* L, int num_lin){ //Vai pra linha num_lin
 	if (L == NULL)
 		printf("Linha inalcancavel");
 	else if (L->id < num_lin)
-		go_to_l(L->prox);
+		go_to_l(L->prox,num_lin);
 	else if (L->id > num_lin)
-		go_to_l(L->ant);
+		go_to_l(L->ant,num_lin);
 	else if (L->id == num_lin)
 		return (L);
 }
 
 //Palavras prox_palavra
+
+
+
+
+
+
+
+
+
+
+
 
 
 
