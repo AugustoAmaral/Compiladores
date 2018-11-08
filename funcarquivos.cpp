@@ -5,7 +5,7 @@ void identificarPalavrasReservadas(Palavras* linha,int num_lin) {
 	Palavras* p = linha;
 	int is_token = 0; //Vai servir pra identificar palavras maiusculas
 	int i = 0; //CONTADOR
-	while (p->prox != NULL) {
+	while (p != NULL) {
 		for (i = 0; i<(tam_palavras_reservadas-1); i++) //VERIFICA SE A PALAVRA ATUAL � RESERVADA
 			if (strcmp(p->info, lexemas_reservadas[i]) == 0){
 				is_token = 1;
@@ -56,6 +56,8 @@ Palavras* pegarPalavras(char* linha){
 		palavra = strtok(NULL, "\t ()\n");
 		contador++;
 	}
+	p->ant->prox = NULL;
+	free(p);
 	return (palavra_retornada);
 }
 
@@ -93,5 +95,7 @@ Linhas* pegarLinhas(char* nome_do_arquivo) {
 		}
 	fclose(arq);
 	
+	l->ant->prox = NULL;
+	free(l);
 	return linha_retornada;
 }

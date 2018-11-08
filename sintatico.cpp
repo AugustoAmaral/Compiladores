@@ -129,7 +129,7 @@ void Sin3(Linhas* L){
 	{
 	case END:
 		begins--;
-		if (L->prox->prox != NULL)
+		if (L->prox != NULL)
 			Sin3(L->prox);
 		else
 		{
@@ -162,7 +162,7 @@ void Sin3(Linhas* L){
 					Sin3(L->prox);
 				else
 				{
-					printf("END esperado na linha: %d.\n",L->id);
+					printf("END esperado depois da linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
@@ -199,7 +199,7 @@ void Sin3(Linhas* L){
 				}
 				else
 				{
-					printf("END esperado na linha: %d.\n",L->id);
+					printf("END esperado depois da linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
@@ -233,7 +233,7 @@ void Sin3(Linhas* L){
 					Sin3(L->prox);
 				else
 				{
-					printf("END esperado na linha: %d.\n",L->id);
+					printf("END esperado depois da linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
@@ -267,7 +267,7 @@ void Sin3(Linhas* L){
 					Sin3(L->prox);
 				else
 				{
-					printf("END esperado na linha: %d.\n",L->id);
+					printf("END esperado depois da linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
@@ -306,7 +306,7 @@ void Sin3(Linhas* L){
 						Sin3(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d.\n",L->id);
+						printf("END esperado depois da linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
@@ -328,7 +328,7 @@ void Sin3(Linhas* L){
 						Sin3(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d.\n",L->id);
+						printf("END esperado depois da linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
@@ -348,7 +348,7 @@ void Sin3(Linhas* L){
 								Sin3(L->prox);
 							else
 							{
-								printf("END esperado na linha: %d.\n",L->id);
+								printf("END esperado depois da linha: %d.\n",L->id);
 								system("PAUSE");
 								exit(0);
 							}
@@ -440,7 +440,7 @@ void Sin2(Linhas* L)
 						Sin2(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d.\n",L->id);
+						printf("END esperado depois da linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
@@ -462,7 +462,7 @@ void Sin2(Linhas* L)
 						Sin2(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d.\n",L->id);
+						printf("END esperado depois da linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
