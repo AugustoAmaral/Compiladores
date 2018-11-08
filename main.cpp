@@ -11,6 +11,7 @@ int main() {
 	Linhas* line = l;
 	while (l->prox != NULL){
 		identificarPalavrasReservadas(l->info,l->id);
+		//printf("Endereco da linha %d: %p, e da proxima e: %p\n",l->id,(void*)l,(void*)l->prox); 
 		//printarLinha(l->info);
 		l = l->prox;
 	}

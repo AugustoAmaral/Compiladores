@@ -55,13 +55,13 @@ void Sin1(Linhas* Line) // Verifica a linha program
 				}
 				else
 				{
-					printf("programa de uma linha só? na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("programa de uma linha só.\n");
 					system("PAUSE");
 					exit(0);
 				}
 				break;
 			default:
-				printf("Error, ';' esperado depois de NAME na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("Error, ';' esperado depois de NAME na linha: %d\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
@@ -69,7 +69,7 @@ void Sin1(Linhas* Line) // Verifica a linha program
 			break;
 
 		default:
-			printf("Error, esperado NAME depois de PROGRAM na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("Error, esperado NAME depois de PROGRAM na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
@@ -77,7 +77,7 @@ void Sin1(Linhas* Line) // Verifica a linha program
 		break;
 	
 	default:
-		printf("PROGRAM não encontrado na linha: %d Coluna: %d\n",L->id,P->id);
+		printf("PROGRAM não encontrado na linha: %d.\n",L->id);
 		system("PAUSE");
 		exit(0);
 		break;
@@ -89,13 +89,12 @@ void Sin1(Linhas* Line) // Verifica a linha program
 	case BEGIN:
 		if (L->prox != NULL)
 		{
-			L = L->prox;
 			begins = 1; //BEGINS = 1 nesse caso, não sei o que significa
-			Sin3(L); //MANDA A LINHA ATUAL PARA SIN3 (A PARTIR DO BEGIN)
+			Sin3(L->prox); //MANDA A LINHA ATUAL PARA SIN3 (A PARTIR DO BEGIN)
 		}
 		else
 		{
-			printf("Begin o que? nao tem nada depois na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("Begin nada, nao tem nada depois da linha: %d\n",L->id);
 			system("PAUSE");
 			exit(0);
 		}		
@@ -104,19 +103,18 @@ void Sin1(Linhas* Line) // Verifica a linha program
 	case VAR:
 		if (L->prox != NULL)
 		{
-			L = L->prox;
-			Sin2(L);
+			Sin2(L->prox);
 		}
 		else
 		{
-			printf("VAR o que? na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("VAR o que, não tem nada depois da linha: %d\n",L->id);
 			system("PAUSE");
 			exit(0);
 		}
 		
 		break;
 	default: //Aqui eu tenho que verificar se é end, pq se for, ele tem que passar né..
-		printf("Begin or Var não encontrado || End encontrado, fim do programa na linha: %d Coluna: %d\n",L->id,P->id);
+		printf("Begin or Var não encontrado || End encontrado na linha: %d\n",L->id);
 		system("PAUSE");
 		exit(0);
 		break;
@@ -132,23 +130,18 @@ void Sin3(Linhas* L){
 	case END:
 		begins--;
 		if (L->prox->prox != NULL)
-		{
-			L = L->prox;
-			P = L->info;
-			token1 = conversor(P->tok);
-			Sin3(L);
-		}
+			Sin3(L->prox);
 		else
 		{
 			if (begins>0)
 			{
-				printf("END(s) esperado(s) na linha: %d (Ficou um Loop ou o begin aberto)",L->id);
+				printf("END(s) esperado(s) na linha: %d (Ficou um Loop ou o begin aberto)\n",L->id);
 				system("PAUSE");
 				exit(0);
 			}
 			else
 			{
-				printf("Programa compilado com sucesso.");
+				printf("Programa compilado com sucesso.\n");
 				system("PAUSE");
 				exit(0);
 			}
@@ -166,28 +159,23 @@ void Sin3(Linhas* L){
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
-				{
-					L = L->prox;
-					P = L->info;
-					token1 = conversor(P->tok);
-					Sin3(L);
-				}
+					Sin3(L->prox);
 				else
 				{
-					printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("END esperado na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
 				break;
 			default:
-				printf("';' esperado depois de NAME na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("';' esperado depois de NAME na linha: %d.\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
 			}
 			break;
 		default:
-			printf("NAME esperado depois de GO_TO na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("NAME esperado depois de GO_TO na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
@@ -207,27 +195,24 @@ void Sin3(Linhas* L){
 				if (L->prox != NULL)
 				{
 					begins++; //Como o loop precisa de um end, eu vou contar aqui.
-					L = L->prox;
-					P = L->info;
-					token1 = conversor(P->tok);
-					Sin3(L);
+					Sin3(L->prox);
 				}
 				else
 				{
-					printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("END esperado na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
 				break;
 			default:
-				printf("';' esperado depois de NAME na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("';' esperado depois de NAME na linha: %d.\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
 			}
 			break;
 		default:
-			printf("Esperado NAME depois de LOOP na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("Esperado NAME depois de LOOP na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
@@ -245,28 +230,23 @@ void Sin3(Linhas* L){
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
-				{
-					L = L->prox;
-					P = L->info;
-					token1 = conversor(P->tok);
-					Sin3(L);
-				}
+					Sin3(L->prox);
 				else
 				{
-					printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("END esperado na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
 				break;
 			default:
-				printf("';' esperado depois de Name na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("';' esperado depois de Name na linha: %d.\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
 			}
 			break;
 		default:
-			printf("NAME esperado depois de READ na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("NAME esperado depois de READ na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
@@ -284,28 +264,23 @@ void Sin3(Linhas* L){
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
-				{
-					L = L->prox;
-					P = L->info;
-					token1 = conversor(P->tok);
-					Sin3(L);
-				}
+					Sin3(L->prox);
 				else
 				{
-					printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("END esperado na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 				}
 				break;
 			default:
-				printf("';' esperado depois de NAME na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("';' esperado depois de NAME na linha: %d.\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
 			}
 			break;
 		default:
-			printf("NAME esperado depois de WRITE na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("NAME esperado depois de WRITE na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
@@ -328,21 +303,16 @@ void Sin3(Linhas* L){
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
-					{
-						L = L->prox;
-						P = L->info;
-						token1 = conversor(P->tok);
-						Sin3(L);
-					}
+						Sin3(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+						printf("END esperado na linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
 					break;
 				default:
-					printf("Esperado ';' depois de '0' na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("Esperado ';' depois de '0' na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 					break;
@@ -355,15 +325,10 @@ void Sin3(Linhas* L){
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
-					{
-						L = L->prox;
-						P = L->info;
-						token1 = conversor(P->tok);
-						Sin3(L);
-					}
+						Sin3(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+						printf("END esperado na linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
@@ -380,28 +345,23 @@ void Sin3(Linhas* L){
 						{
 						case SEMICOLON:
 							if (L->prox != NULL)
-							{
-								L = L->prox;
-								P = L->info;
-								token1 = conversor(P->tok);
-								Sin3(L);
-							}
+								Sin3(L->prox);
 							else
 							{
-								printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+								printf("END esperado na linha: %d.\n",L->id);
 								system("PAUSE");
 								exit(0);
 							}
 							break;
 						default:
-							printf("Esperado ';' depois de '1' na linha: %d Coluna: %d\n",L->id,P->id);
+							printf("Esperado ';' depois de '1' na linha: %d.\n",L->id);
 							system("PAUSE");
 							exit(0);
 							break;
 						}
 						break;
 					default:
-						printf("Esperado '1' depois de '+' na linha: %d Coluna: %d\n",L->id,P->id);
+						printf("Esperado '1' depois de '+' na linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 						break;
@@ -409,28 +369,28 @@ void Sin3(Linhas* L){
 
 					break;
 				default:
-					printf("Esperado ';' depois de '0' na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("Esperado ';' depois de '0' na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 					break;
 				}
 				break;
 			default:
-				printf("Esperado '0' ou NAME na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("Esperado '0' ou NAME na linha: %d.\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
 			}
 			break;
 		default:
-			printf("Esperado Atribuidor '<-' na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("Esperado Atribuidor '<-' na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
 		}
 		break;
 	default:
-		printf("Fora da Regra sintatica na linha: %d Coluna: %d\n",L->id,P->id);
+		printf("Fora da Regra sintatica na linha: %d.\n",L->id);
 		system("PAUSE");
 		exit(0);
 		break;
@@ -477,21 +437,16 @@ void Sin2(Linhas* L)
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
-					{
-						L = L->prox;
-						P = L->info;
-						token1 = conversor(P->tok);
-						Sin2(L);
-					}
+						Sin2(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+						printf("END esperado na linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
 					break;
 				default:
-					printf("Error, ';' esperado depois do TIPO na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("Error, ';' esperado depois do TIPO na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 					break;
@@ -504,42 +459,37 @@ void Sin2(Linhas* L)
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
-					{
-						L = L->prox;
-						P = L->info;
-						token1 = conversor(P->tok);
-						Sin2(L);
-					}
+						Sin2(L->prox);
 					else
 					{
-						printf("END esperado na linha: %d Coluna: %d\n",L->id,P->id);
+						printf("END esperado na linha: %d.\n",L->id);
 						system("PAUSE");
 						exit(0);
 					}
 					break;
 				default:
-					printf("Error, ';' esperado depois do TIPO na linha: %d Coluna: %d\n",L->id,P->id);
+					printf("Error, ';' esperado depois do TIPO na linha: %d.\n",L->id);
 					system("PAUSE");
 					exit(0);
 					break;
 				}
 				break;
 			default:
-				printf("TIPO esperado depois de ':' na linha: %d Coluna: %d\n",L->id,P->id);
+				printf("TIPO esperado depois de ':' na linha: %d.\n",L->id);
 				system("PAUSE");
 				exit(0);
 				break;
 			}
 			break;
 		default:
-			printf("Error, ':' esperado depois de NAME na linha: %d Coluna: %d\n",L->id,P->id);
+			printf("Error, ':' esperado depois de NAME na linha: %d.\n",L->id);
 			system("PAUSE");
 			exit(0);
 			break;
 		}
 		break;
 	default:
-		printf("Begin or Name não encontrado na linha: %d Coluna: %d\n",L->id,P->id);
+		printf("Begin or Name não encontrado na linha: %d.\n",L->id);
 		system("PAUSE");
 		exit(0);
 		break;
