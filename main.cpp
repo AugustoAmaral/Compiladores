@@ -17,7 +17,7 @@ int main() {
 	}
 	l = line;
 	//printf("TOKEN %s",conversor(2));
-	Sin1(l);
+	Sin1(l, (Semantico*) malloc (sizeof(Semantico)));
 	//sintatico
 	/*char testa[] = {"PALAVRATESTE"};
 	char tests[] = {"palavrateste"};

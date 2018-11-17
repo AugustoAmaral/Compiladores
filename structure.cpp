@@ -113,13 +113,14 @@ typedef struct palavras{
 	struct palavras* prox;
 } Palavras;
 
-/*
-typedef struct sintatico {
-	char* nome;
-	char* lex;
-	char* val;
-} Sintatico;
-*/
+
+typedef struct semantico {
+	char nome[40];
+	token type;
+	int val;
+	struct semantico* prox;
+} Semantico;
+
 typedef struct linhas{
 	struct linhas* ant;
 	int id;

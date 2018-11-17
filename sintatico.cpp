@@ -19,24 +19,63 @@
 
 #include "funcarquivos.cpp"
 
-void Sin1(Linhas*);
-void Sin2(Linhas*);
-void Sin3(Linhas*);
+void Sin1(Linhas*,Semantico*);
+void Sin2(Linhas*,Semantico*);
+void Sin3(Linhas*,Semantico*);
+void checkVar (char,token,int,Semantico*,int=0);
 
 int begins = 0;
 
-void Sin1(Linhas* Line) // Verifica a linha program
+
+
+void addVar (char name[40], token tipo,Semantico* S){
+	while (S->prox != NULL)
+		addVar (name,tipo,S->prox); //VAI ATÉ A ULTIMA VARIAVEL EXISTENTE
+	S->prox = (Semantico*) malloc (sizeof(Semantico)); //ALOCA UM ESPAÇO PRA UMA NOVA VARIAVEL
+	S = S->prox; //VAI PRO ESPAÇO DA PROXIMA
+	strcpy(S->nome,name);
+	S->prox = NULL;
+	S->type = tipo;
+	S->val = 0; //ESTOU SUPONDO QUE O COMPILADOR JA INICIA A VARIAVEL LIMPA
+}
+
+void checkVar (char name[40], token tipo, int valor, Semantico* S,int cont){
+	cont++;
+	while (S != NULL)
+		if (strcmp(S->nome,name) == 0) //PROCURA O NOME DA VARIAVEL
+			if (S->type == tipo){
+				S->val = valor;//VERIFICAR COM SANYA SE EU TENHO QUE SALVAR OS VALORES PORQUE SE PRECISAR EU VOU TER QUE CRIAR UMA FUNCAO PRA PEGAR O VALOR DA VARIAVEL NO CASO DE ATRIBUIÇÃO DE X <- Y OU ALGO ASSIM
+				cont = 0;
+			}
+			else{
+				printf("Atribuicao de variaveis de tipos incorretos. %s <- %s.\n",S->nome, name);
+				exit(0);
+			}
+		else
+			checkVar(name,tipo,valor,S,cont);
+	if (cont==1){
+		printf("Não foi encontrado nenhuma variavel com o nome %s.\n",name);
+		exit(0);
+	}
+}
+
+
+void Sin1(Linhas* Line,Semantico* S) // Verifica a linha program
 {
 	Linhas* L = Line;
 	token token1;
 	token token2;
 	token token3;
 	Palavras* P = L->info; //Recebe a palavra da primeira linha
+	char tmp_name[40]; //Isso aqui que vai guardar o nome da variavel.
+	token tmp_tipo;
+	int tmp_valor;
 	
 
 	token1 = conversor(P->tok); //primeira palavra
 	P = P->prox;
 	token2 = conversor(P->tok); //Segunda palavra
+	strcpy(tmp_name,P->info);//Vai pegar o nome
 	P = P->prox;
 	token3 = conversor(P->tok); //Terceira palavra
 	switch (token1)
@@ -50,6 +89,10 @@ void Sin1(Linhas* Line) // Verifica a linha program
 			case SEMICOLON:
 				if (L->prox != NULL)
 				{
+					strcpy(S->nome,tmp_name);
+					S->type = PROGRAM;
+					S->val = 0;
+					S->prox = NULL;
 					L = L->prox;
 					P = L->info;
 				}
@@ -90,7 +133,7 @@ void Sin1(Linhas* Line) // Verifica a linha program
 		if (L->prox != NULL)
 		{
 			begins = 1; //BEGINS = 1 nesse caso, não sei o que significa
-			Sin3(L->prox); //MANDA A LINHA ATUAL PARA SIN3 (A PARTIR DO BEGIN)
+			Sin3(L->prox,S); //MANDA A LINHA ATUAL PARA SIN3 (A PARTIR DO BEGIN)
 		}
 		else
 		{
@@ -103,7 +146,7 @@ void Sin1(Linhas* Line) // Verifica a linha program
 	case VAR:
 		if (L->prox != NULL)
 		{
-			Sin2(L->prox);
+			Sin2(L->prox,S);
 		}
 		else
 		{
@@ -121,7 +164,7 @@ void Sin1(Linhas* Line) // Verifica a linha program
 	}
 }
 
-void Sin3(Linhas* L){
+void Sin3(Linhas* L,Semantico* S){
 	Palavras* P = L->info; //Recebe a palavra da primeira linha
 	token token1 = conversor(P->tok);
 	token token2, token3, token4, token5, token6;
@@ -130,7 +173,7 @@ void Sin3(Linhas* L){
 	case END:
 		begins--;
 		if (L->prox != NULL)
-			Sin3(L->prox);
+			Sin3(L->prox,S);
 		else
 		{
 			if (begins>0)
@@ -159,7 +202,7 @@ void Sin3(Linhas* L){
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
-					Sin3(L->prox);
+					Sin3(L->prox,S);
 				else
 				{
 					printf("END esperado depois da linha: %d.\n",L->id);
@@ -195,7 +238,7 @@ void Sin3(Linhas* L){
 				if (L->prox != NULL)
 				{
 					begins++; //Como o loop precisa de um end, eu vou contar aqui.
-					Sin3(L->prox);
+					Sin3(L->prox,S);
 				}
 				else
 				{
@@ -230,7 +273,7 @@ void Sin3(Linhas* L){
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
-					Sin3(L->prox);
+					Sin3(L->prox,S);
 				else
 				{
 					printf("END esperado depois da linha: %d.\n",L->id);
@@ -264,7 +307,7 @@ void Sin3(Linhas* L){
 			{
 			case SEMICOLON:
 				if (L->prox != NULL)
-					Sin3(L->prox);
+					Sin3(L->prox,S);
 				else
 				{
 					printf("END esperado depois da linha: %d.\n",L->id);
@@ -303,7 +346,7 @@ void Sin3(Linhas* L){
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
-						Sin3(L->prox);
+						Sin3(L->prox,S);
 					else
 					{
 						printf("END esperado depois da linha: %d.\n",L->id);
@@ -325,7 +368,7 @@ void Sin3(Linhas* L){
 				{
 				case SEMICOLON:
 					if (L->prox != NULL)
-						Sin3(L->prox);
+						Sin3(L->prox,S);
 					else
 					{
 						printf("END esperado depois da linha: %d.\n",L->id);
@@ -345,7 +388,7 @@ void Sin3(Linhas* L){
 						{
 						case SEMICOLON:
 							if (L->prox != NULL)
-								Sin3(L->prox);
+								Sin3(L->prox,S);
 							else
 							{
 								printf("END esperado depois da linha: %d.\n",L->id);
@@ -406,7 +449,7 @@ void Sin3(Linhas* L){
 	*/
 }
 
-void Sin2(Linhas* L)
+void Sin2(Linhas* L,Semantico* S)
 {
 	
 	Palavras* P = L->info;
@@ -414,13 +457,17 @@ void Sin2(Linhas* L)
 	token token2;
 	token token3;
 	token token4;
+	char tmp_name[40]; //Isso aqui que vai guardar o nome da variavel.
+	token tmp_tipo;
+	
 	switch (token1)
 	{
 	case BEGIN:
 		begins = 1; //Primeiro Begin
-		Sin3(L->prox); //Já que no sin3 ele não reconhece begin, tem que mandar por aqui
+		Sin3(L->prox,S); //Já que no sin3 ele não reconhece begin, tem que mandar por aqui
 		break;
 	case NAME:
+		strcpy(tmp_name,P->info);
 		P = P->prox; //L->info = L->info->prox;
 		token2 = conversor(P->tok);
 		switch (token2)
@@ -431,13 +478,16 @@ void Sin2(Linhas* L)
 			switch (token3)
 			{
 			case INTEGER:
+				tmp_tipo = INTEGER;
 				P = P->prox; //L->info = L->info->prox;
 				token4 = conversor(P->tok);
 				switch (token4)
 				{
 				case SEMICOLON:
-					if (L->prox != NULL)
-						Sin2(L->prox);
+					if (L->prox != NULL){
+						addVar(tmp_name,tmp_tipo,S);
+						Sin2(L->prox,S);
+					}
 					else
 					{
 						printf("END esperado depois da linha: %d.\n",L->id);
@@ -453,13 +503,16 @@ void Sin2(Linhas* L)
 				}
 				break;
 			case REAL:
+				tmp_tipo = REAL;
 				P = P->prox; //L->info = L->info->prox;
 				token4 = conversor(P->tok);
 				switch (token4)
 				{
 				case SEMICOLON:
-					if (L->prox != NULL)
-						Sin2(L->prox);
+					if (L->prox != NULL){
+						addVar(tmp_name,tmp_tipo,S);
+						Sin2(L->prox,S);
+					}
 					else
 					{
 						printf("END esperado depois da linha: %d.\n",L->id);
