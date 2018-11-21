@@ -16,47 +16,65 @@
 	-- READ ( NOME ) ;
 	-- WRITE ( NOME ) ;
 */ 
-
+#include <windows.h>
 #include "funcarquivos.cpp"
 
 void Sin1(Linhas*,Semantico*);
 void Sin2(Linhas*,Semantico*);
 void Sin3(Linhas*,Semantico*);
-void checkVar (char,token,int,Semantico*,int=0);
 
 int begins = 0;
 
-
-
-void addVar (char name[40], token tipo,Semantico* S){
-	while (S->prox != NULL)
-		addVar (name,tipo,S->prox); //VAI ATÉ A ULTIMA VARIAVEL EXISTENTE
-	S->prox = (Semantico*) malloc (sizeof(Semantico)); //ALOCA UM ESPAÇO PRA UMA NOVA VARIAVEL
-	S = S->prox; //VAI PRO ESPAÇO DA PROXIMA
-	strcpy(S->nome,name);
-	S->prox = NULL;
-	S->type = tipo;
-	S->val = 0; //ESTOU SUPONDO QUE O COMPILADOR JA INICIA A VARIAVEL LIMPA
+void printVar(Semantico* S){
+	printf("\n%p, %s, %d, %d, %p\n",(void*)S,S->nome,S->type,S->val,(void*)S->prox);
+	if (S->prox != NULL)
+		printVar(S->prox);
 }
 
-void checkVar (char name[40], token tipo, int valor, Semantico* S,int cont){
+void addVar (char* name, token tipo,Semantico* S){
+	if (S->prox != NULL)
+		addVar (name,tipo,S->prox); //VAI ATÉ A ULTIMA VARIAVEL EXISTENTE
+	else{
+		S->prox = (Semantico*) malloc (sizeof(Semantico)); //ALOCA UM ESPAÇO PRA UMA NOVA VARIAVEL
+		S = S->prox; //VAI PRO ESPAÇO DA PROXIMA
+		strcpy(S->nome,name);
+		S->prox = NULL;
+		S->type = tipo;
+		S->val = 0; //ESTOU SUPONDO QUE O COMPILADOR JA INICIA A VARIAVEL LIMPA
+	}
+}
+
+int checkVar (char* name, token tipo, int valor, Semantico* S,int cont,int linha){
 	cont++;
-	while (S != NULL)
-		if (strcmp(S->nome,name) == 0) //PROCURA O NOME DA VARIAVEL
+	if (S != NULL){
+		//printf("%s <-> %s  //  %d <-> %d  //  %d <-> %d  //  %p -> %p\n",S->nome,name,S->val,valor,S->type,tipo,(void*)S,(void*)S->prox);
+		if (strcmp(S->nome,name) == 0){ //PROCURA O NOME DA VARIAVEL
 			if (S->type == tipo){
-				S->val = valor;//VERIFICAR COM SANYA SE EU TENHO QUE SALVAR OS VALORES PORQUE SE PRECISAR EU VOU TER QUE CRIAR UMA FUNCAO PRA PEGAR O VALOR DA VARIAVEL NO CASO DE ATRIBUIÇÃO DE X <- Y OU ALGO ASSIM
+				if (valor == -1)
+					S->val = S->val;
+				else
+					S->val = valor; //VERIFICAR COM SANYA SE EU TENHO QUE SALVAR OS VALORES PORQUE SE PRECISAR EU VOU TER QUE CRIAR UMA FUNCAO PRA PEGAR O VALOR DA VARIAVEL NO CASO DE ATRIBUIÇÃO DE X <- Y OU ALGO ASSIM
 				cont = 0;
+				return 0;
 			}
 			else{
-				printf("Atribuicao de variaveis de tipos incorretos. %s <- %s.\n",S->nome, name);
+				printf("Atribuicao de variaveis de tipos incorretos na linha %d ao atribuir a variavel %s a um tipo diferente.\n",linha,name);
 				exit(0);
 			}
-		else
-			checkVar(name,tipo,valor,S,cont);
-	if (cont==1){
-		printf("Não foi encontrado nenhuma variavel com o nome %s.\n",name);
+		}else
+			cont = checkVar(name,tipo,valor,S->prox,cont,linha);}
+	if (cont==1){ //COMO A FUNCAO É RECURSIVA, ELA SÓ VAI PRINTAR ISSO SE NAO ENCONTRAR NENHUMA VARIAVEL
+		printf("Nao foi encontrado nenhuma variavel com o nome %s.\n",name);
 		exit(0);
 	}
+}
+
+token getToken (Semantico* S,char* name){
+	if (S != NULL)
+		if (strcmp(S->nome,name) == 0) //PROCURA O NOME DA VARIAVEL
+			return S->type;
+		else
+			return (getToken(S->prox,name));
 }
 
 
@@ -165,9 +183,12 @@ void Sin1(Linhas* Line,Semantico* S) // Verifica a linha program
 }
 
 void Sin3(Linhas* L,Semantico* S){
+	//printVar(S);
 	Palavras* P = L->info; //Recebe a palavra da primeira linha
 	token token1 = conversor(P->tok);
 	token token2, token3, token4, token5, token6;
+	char tmp_name[40],tmp_name_aux[40]; //Isso aqui que vai guardar o nome da variavel.
+	token tmp_tipo,tmp_tipo_aux;
 	switch (token1)
 	{
 	case END:
@@ -196,11 +217,13 @@ void Sin3(Linhas* L,Semantico* S){
 		switch (token2)
 		{
 		case NAME:
+			strcpy(tmp_name,P->info);
 			P = P->prox;
 			token3 = conversor(P->tok);
 			switch (token3)
 			{
 			case SEMICOLON:
+				checkVar(tmp_name,INTEGER,-1,S,0,L->id);
 				if (L->prox != NULL)
 					Sin3(L->prox,S);
 				else
@@ -230,6 +253,7 @@ void Sin3(Linhas* L,Semantico* S){
 		switch (token2)
 		{
 		case NAME:
+			strcpy(tmp_name,P->info);
 			P = P->prox; //L->info = L->info->prox;
 			token3 = conversor(P->tok);
 			switch (token3)
@@ -237,6 +261,7 @@ void Sin3(Linhas* L,Semantico* S){
 			case SEMICOLON:
 				if (L->prox != NULL)
 				{
+					checkVar(tmp_name,INTEGER,-1,S,0,L->id); //COMO EU NAO SEI O QUE O USUARIO VAI DIGITAR, MANDEI INT MESMO
 					begins++; //Como o loop precisa de um end, eu vou contar aqui.
 					Sin3(L->prox,S);
 				}
@@ -267,11 +292,13 @@ void Sin3(Linhas* L,Semantico* S){
 		switch (token2)
 		{
 		case NAME:
+			strcpy(tmp_name,P->info);
 			P = P->prox;
 			token3 = conversor(P->tok);
 			switch (token3)
 			{
 			case SEMICOLON:
+				checkVar(tmp_name,getToken(S,tmp_name),-1,S,0,L->id);
 				if (L->prox != NULL)
 					Sin3(L->prox,S);
 				else
@@ -301,11 +328,13 @@ void Sin3(Linhas* L,Semantico* S){
 		switch (token2)
 		{
 		case NAME:
+			strcpy(tmp_name,P->info);
 			P = P->prox;
 			token3 = conversor(P->tok);
 			switch (token3)
 			{
 			case SEMICOLON:
+				checkVar(tmp_name,getToken(S,tmp_name),-1,S,0,L->id);
 				if (L->prox != NULL)
 					Sin3(L->prox,S);
 				else
@@ -330,6 +359,8 @@ void Sin3(Linhas* L,Semantico* S){
 		}
 		break;
 	case NAME:
+		tmp_tipo = getToken(S,P->info);
+		strcpy(tmp_name,P->info);
 		P = P->prox; //L->info = L->info->prox;
 		token2 = conversor(P->tok);
 		switch (token2)
@@ -345,6 +376,7 @@ void Sin3(Linhas* L,Semantico* S){
 				switch (token4)
 				{
 				case SEMICOLON:
+					checkVar(tmp_name,INTEGER,0,S,0,L->id);
 					if (L->prox != NULL)
 						Sin3(L->prox,S);
 					else
@@ -362,11 +394,13 @@ void Sin3(Linhas* L,Semantico* S){
 				}
 				break;
 			case NAME:
+				strcpy(tmp_name_aux,P->info);
 				P = P->prox; //L->info = L->info->prox;
 				token4 = conversor(P->tok);
 				switch (token4)
 				{
 				case SEMICOLON:
+					checkVar(tmp_name_aux,tmp_tipo,-1,S,0,L->id);
 					if (L->prox != NULL)
 						Sin3(L->prox,S);
 					else
@@ -382,6 +416,7 @@ void Sin3(Linhas* L,Semantico* S){
 					switch (token5)
 					{
 					case ONE:
+						checkVar(tmp_name_aux,tmp_tipo,1,S,0,L->id);
 						P = P->prox; //L->info = L->info->prox;
 						token6 = conversor(P->tok);
 						switch (token6)
@@ -451,7 +486,6 @@ void Sin3(Linhas* L,Semantico* S){
 
 void Sin2(Linhas* L,Semantico* S)
 {
-	
 	Palavras* P = L->info;
 	token token1 = conversor(P->tok);
 	token token2;
@@ -484,8 +518,8 @@ void Sin2(Linhas* L,Semantico* S)
 				switch (token4)
 				{
 				case SEMICOLON:
+					addVar(tmp_name,INTEGER,S);
 					if (L->prox != NULL){
-						addVar(tmp_name,tmp_tipo,S);
 						Sin2(L->prox,S);
 					}
 					else
@@ -509,8 +543,8 @@ void Sin2(Linhas* L,Semantico* S)
 				switch (token4)
 				{
 				case SEMICOLON:
+					addVar(tmp_name,REAL,S);
 					if (L->prox != NULL){
-						addVar(tmp_name,tmp_tipo,S);
 						Sin2(L->prox,S);
 					}
 					else
