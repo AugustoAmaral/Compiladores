@@ -31,9 +31,15 @@ void printVar(Semantico* S){
 		printVar(S->prox);
 }
 
-void addVar (char* name, token tipo,Semantico* S){
-	if (S->prox != NULL)
-		addVar (name,tipo,S->prox); //VAI ATÉ A ULTIMA VARIAVEL EXISTENTE
+void addVar (char* name, token tipo,Semantico* S,int l){
+	//printf("recebi: %s \t/ tok: %d \t/ S->nome: %s \t/ S->tokem: %d.\n",name,tipo,S->nome,S->type);
+	if (strcmp(name,S->nome) == 0){
+		printf("Nome de variavel ja encontrado na linha %d.\n",l);
+		exit(0);
+	}
+	else
+	if (S->prox != NULL)		
+			addVar (name,tipo,S->prox,l); //VAI ATÉ A ULTIMA VARIAVEL EXISTENTE
 	else{
 		S->prox = (Semantico*) malloc (sizeof(Semantico)); //ALOCA UM ESPAÇO PRA UMA NOVA VARIAVEL
 		S = S->prox; //VAI PRO ESPAÇO DA PROXIMA
@@ -45,9 +51,14 @@ void addVar (char* name, token tipo,Semantico* S){
 }
 
 int checkVar (char* name, token tipo, int valor, Semantico* S,int cont,int linha){
-	cont++;
+	cont=1;
 	if (S != NULL){
-		//printf("%s <-> %s  //  %d <-> %d  //  %d <-> %d  //  %p -> %p\n",S->nome,name,S->val,valor,S->type,tipo,(void*)S,(void*)S->prox);
+		//printf("%s <-> %s  //  %d <-> %d  //  %d <-> %d  //  %p -> %p // CONT: %d\n",S->nome,name,S->val,valor,S->type,tipo,(void*)S,(void*)S->prox,cont);
+		if ( (strcmp(name,S->nome) == 0) && (S->type == 0)){
+			printf("Variavel citada na linha %d e do tipo program, qual seu problema?\n",linha);
+			exit(0);
+		}
+		else
 		if (strcmp(S->nome,name) == 0){ //PROCURA O NOME DA VARIAVEL
 			if (S->type == tipo){
 				if (valor == -1)
@@ -64,7 +75,7 @@ int checkVar (char* name, token tipo, int valor, Semantico* S,int cont,int linha
 		}else
 			cont = checkVar(name,tipo,valor,S->prox,cont,linha);}
 	if (cont==1){ //COMO A FUNCAO É RECURSIVA, ELA SÓ VAI PRINTAR ISSO SE NAO ENCONTRAR NENHUMA VARIAVEL
-		printf("Nao foi encontrado nenhuma variavel com o nome %s.\n",name);
+		printf("Nao foi encontrado nenhuma variavel com o nome %s na linha %d.\n",name,linha);
 		exit(0);
 	}
 }
@@ -183,6 +194,10 @@ void Sin1(Linhas* Line,Semantico* S) // Verifica a linha program
 }
 
 void Sin3(Linhas* L,Semantico* S){
+	if (begins <= 0){
+		printf("Foi encontrado informacao depois do ultimo END na linha %d",L->id);
+		exit(0);
+	}
 	//printVar(S);
 	Palavras* P = L->info; //Recebe a palavra da primeira linha
 	token token1 = conversor(P->tok);
@@ -376,7 +391,7 @@ void Sin3(Linhas* L,Semantico* S){
 				switch (token4)
 				{
 				case SEMICOLON:
-					checkVar(tmp_name,INTEGER,0,S,0,L->id);
+					checkVar(tmp_name,getToken(S,tmp_name),0,S,0,L->id);
 					if (L->prox != NULL)
 						Sin3(L->prox,S);
 					else
@@ -518,7 +533,7 @@ void Sin2(Linhas* L,Semantico* S)
 				switch (token4)
 				{
 				case SEMICOLON:
-					addVar(tmp_name,INTEGER,S);
+					addVar(tmp_name,INTEGER,S,P->line);
 					if (L->prox != NULL){
 						Sin2(L->prox,S);
 					}
@@ -543,7 +558,7 @@ void Sin2(Linhas* L,Semantico* S)
 				switch (token4)
 				{
 				case SEMICOLON:
-					addVar(tmp_name,REAL,S);
+					addVar(tmp_name,REAL,S,P->line);
 					if (L->prox != NULL){
 						Sin2(L->prox,S);
 					}
